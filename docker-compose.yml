@@ -1,0 +1,11 @@
+version: "3.9"
+
+services:
+  app:
+    build: .
+    environment:
+      - VUE_APP_API_URL=https://arsbooka.com/api/
+      - CHOKIDAR_USEPOLLING=true
+    volumes:
+      - .:/code
+    command: npm run serve
