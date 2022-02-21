@@ -7,15 +7,19 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     books: [],
-    book: {}
+    book: {},
+    parental_guidance: [],
   },
   mutations: {},
   actions: {
     setBooks(context) {
-      HTTP.get('books/').then((data) => { context.state.books = data });
+      HTTP.get('books/').then((response) => { context.state.books = response.data });
     },
     getBook(context, url) {
-      HTTP.get(url).then((data) => { context.state.book = data });
+      HTTP.get(url).then((response) => { context.state.book = response.data });
+    },
+    getParentalGuidance(context, url) {
+      HTTP.get(url).then((response) => { context.state.parental_guidance = response.data });
     }
   },
   modules: {},

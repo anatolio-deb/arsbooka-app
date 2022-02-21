@@ -1,30 +1,33 @@
 <template>
   <v-container>
-    <v-row justify="center">
-      <v-col cols="2">
-        <v-img :src="cover" contain></v-img>
+    <v-row>
+      <v-col>
+        <v-container fluid class="grey lighten-4 rounded-lg">
+          <v-row>
+            <v-col>
+              <v-img :src="cover" contain max-height="200px"></v-img>
+            </v-col>
+          </v-row>
+          <v-row justify="end">
+            <v-col class="text-caption" cols="2">
+              {{ parental_guidance.age + "+" }}
+            </v-col>
+          </v-row>
+        </v-container>
       </v-col>
     </v-row>
-
-    <v-row justify="center">
-      <v-col class="text-subtitle-2" cols="auto" @click="onTitleClick">
-        {{ title }}
+    <v-row justify="space-between">
+      <v-col align-self="center" class="green--text text-subtitle-1">
+        {{ price }}M
       </v-col>
-    </v-row>
-
-    <v-row justify="center">
-      <v-col class="text-caption" cols="auto">
-        <v-btn color="orange" rounded depressed>
-          <v-icon> mdi-cart-arrow-down </v-icon> <v-col>{{ price }} ман.</v-col>
-        </v-btn>
+      <v-col>
+        <v-btn depressed color="orange">В корзину</v-btn>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
-import { mapActions } from "vuex";
-
 export default {
   props: {
     url: String,
@@ -35,13 +38,6 @@ export default {
       url: String,
     },
     cover: String,
-  },
-  methods: {
-    ...mapActions(["getBook"]),
-    onTitleClick() {
-      this.getBook(this.url);
-      this.$router.push(`/books/${this.title.replace(" ", "-").toLowerCase()}`);
-    },
   },
 };
 </script>

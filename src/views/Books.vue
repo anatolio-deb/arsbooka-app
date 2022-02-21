@@ -1,12 +1,13 @@
 <template>
   <v-container>
     <v-row>
-      <v-col v-for="book in books" :key="book.url" cols="auto">
+      <v-col v-for="book in books" :key="book.url" cols="3">
         <book
           :url="book.url"
           :title="book.title"
           :price="book.price"
           :cover="book.cover"
+          :parental_guidance="book.parental_guidance"
         >
         </book>
       </v-col>

@@ -2,6 +2,8 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Books from "../views/Books.vue";
 import Book from "../views/Book.vue"
+import ParentalGuidance from "../views/ParentalGuidance.vue"
+
 
 Vue.use(VueRouter);
 
@@ -13,6 +15,10 @@ const routes = [
   {
     path: "/books/:title",
     component: Book
+  },
+  {
+    path: "/books/parental_guidance/:age",
+    component: ParentalGuidance
   }
 
 ];
