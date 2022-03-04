@@ -5,6 +5,7 @@ import store from "./store";
 import vuetify from "./plugins/vuetify";
 import axios from "axios";
 
+
 export const HTTP = axios.create({
   baseURL: process.env.VUE_APP_API_URL
 });

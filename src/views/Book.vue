@@ -1,5 +1,5 @@
 <template>
-  <div></div>
+  <div>{{ this.book }}</div>
 </template>
 
 <script>

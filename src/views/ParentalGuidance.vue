@@ -1,9 +1,12 @@
 <template>
-  <div></div>
+  <div>{{ parental_guidance }}</div>
 </template>
 
 <script>
-export default {};
+import { mapState } from "vuex";
+export default {
+  computed: mapState(["parental_guidance"]),
+};
 </script>
 
 <style>

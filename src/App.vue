@@ -7,7 +7,7 @@
 
     <v-app-bar app flat hide-on-scroll color="white">
       <v-img src="./assets/logo.jpg" max-width="50"></v-img>
-      <v-toolbar-title class="text-overline pl-4">Книги детям</v-toolbar-title>
+      <!-- <v-toolbar-title class="text-overline pl-4">Книги детям</v-toolbar-title> -->
     </v-app-bar>
 
     <!-- Sizes your content based upon application components -->

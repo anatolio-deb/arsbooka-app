@@ -17,7 +17,7 @@ const routes = [
     component: Book
   },
   {
-    path: "/books/parental_guidance/:age",
+    path: "/books/parental-guidance/:age",
     component: ParentalGuidance
   }
 
