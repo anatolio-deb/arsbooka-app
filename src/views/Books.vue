@@ -1,14 +1,14 @@
 <template>
-  <v-container>
-    <v-row justify="center">
-      <v-col v-for="book in books" :key="book.url" lg="2" md="4" sm="6">
+  <v-container fluid class="rounded-lg">
+    <v-row>
+      <v-col v-for="book in books" :key="book.url" lg="3" md="4" sm="6">
         <book
           :url="book.url"
           :title="book.title"
           :price="book.price"
           :cover="book.cover"
           :parentalGuidance="book.parental_guidance"
-          :new="getNew(book.date_added)"
+          :new="isNew(book)"
           :inStock="book.in_stock"
         >
         </book>
@@ -19,17 +19,27 @@
 
 <script>
 import Book from "../components/Book.vue";
-import { mapState, mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   components: {
     Book,
   },
-  computed: mapState(["books"]),
+  computed: {
+    ...mapGetters(["newBooks"]),
+    ...mapGetters("filter", ["filterApplied"]),
+    books() {
+      if (this.filterApplied) {
+        return this.$store.state.filter.books;
+      } else {
+        return this.$store.state.books;
+      }
+    },
+  },
   methods: {
     ...mapActions(["setBooks"]),
-    getNew(date_added) {
-      return new Date().getMonth() - new Date(date_added).getMonth() >= 0;
+    isNew(book) {
+      return this.newBooks.includes(book);
     },
   },
   mounted() {

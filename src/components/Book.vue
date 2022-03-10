@@ -1,16 +1,17 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-row>
       <v-col>
-        <v-container fluid class="grey lighten-4 rounded-lg">
+        <v-container class="canvas rounded-lg">
           <v-row justify="end" class="mb-n8">
             <v-col cols="3">
               <v-btn
+                large
                 icon
                 :color="wishListButtonColor"
                 @click="handleWishList"
               >
-                <v-icon>mdi-heart</v-icon>
+                <v-icon>{{ wishListButtonIcon }}</v-icon>
               </v-btn>
             </v-col>
           </v-row>
@@ -28,13 +29,14 @@
           </v-row>
 
           <v-row justify="space-between" class="mt-n2">
-            <v-col cols="1">
+            <v-col cols="1" class="ma-2">
               <v-chip
-                color="light-green"
-                class="white--text rounded-circle text-caption px-4 py-4"
+                color="#FB9300"
+                class="rounded-circle text-caption px-5 py-5"
                 x-small
+                text-color="white"
               >
-                <span class="ml-n3">New</span>
+                <span class="clickable ml-n3">New</span>
               </v-chip>
             </v-col>
 
@@ -60,17 +62,16 @@
     </v-row>
 
     <v-row justify="space-between">
-      <v-col
-        align-self="center"
-        class="light-green--text text-h5"
-        v-if="inStock"
-        
-      >
+      <v-col align-self="center" class="text-h5" v-if="inStock">
         {{ price }}m
       </v-col>
 
       <v-col v-else>
-        <v-btn depressed color="yellow" class="white--text rounded-lg mr-n6 py-5" small
+        <v-btn
+          depressed
+          color="yellow"
+          class="white--text rounded-lg mr-n6 py-5"
+          small
           >Предзаказ</v-btn
         >
       </v-col>
@@ -78,10 +79,11 @@
       <v-col>
         <v-btn
           depressed
-          color="orange"
+          color="#F54748"
           class="white--text rounded-lg ml-10 py-5"
           :disabled="!inStock"
           small
+          @click="handleCart"
           >В корзину</v-btn
         >
       </v-col>
@@ -95,13 +97,23 @@ import { mapActions, mapState, mapMutations, mapGetters } from "vuex";
 export default {
   computed: {
     ...mapState(["books"]),
-    ...mapGetters(["getBookByUrl", "wishList/getBookByUrl"]),
-    wishListButtonColor(){
-      if (this["wishList/getBookByUrl"](this.url)){
-        return 'red'
+    ...mapGetters([
+      "getBookByUrl",
+      "wishList/getBookByUrl",
+      "cart/getBookByUrl",
+    ]),
+    wishListButtonColor() {
+      if (this["wishList/getBookByUrl"](this.url)) {
+        return "#F54748";
       }
-      return 'grey'
-    }
+      return "#343F56";
+    },
+    wishListButtonIcon() {
+      if (this["wishList/getBookByUrl"](this.url)) {
+        return "mdi-heart";
+      }
+      return "mdi-heart-outline";
+    },
   },
   props: {
     url: String,
@@ -124,6 +136,7 @@ export default {
   methods: {
     ...mapActions(["setBook", "setParentalGuidance"]),
     ...mapMutations("wishList", ["addToWishList", "removeFromWishList"]),
+    ...mapMutations("cart", ["addToCart", "removeFromCart"]),
     onBookClick() {
       this.setBook(this.url);
       this.$router.push(`/books/${this.title}`);
@@ -135,18 +148,29 @@ export default {
       );
     },
     handleWishList() {
-      if (this["wishList/getBookByUrl"](this.url)) {
-        this.removeFromWishList(this.getBookByUrl(this.url))
+      let book = this["wishList/getBookByUrl"](this.url);
+      if (book) {
+        this.removeFromWishList(book);
       } else {
-        this.addToWishList(this.getBookByUrl(this.url))
-      }
+        this.addToWishList(this.getBookByUrl(this.url));
       }
     },
-  };
+    handleCart() {
+      // if (this["cart/getBookByUrl"](this.url)) {
+      //   this.removeFromCart(this.getBookByUrl(this.url));
+      // } else {
+      this.addToCart(this.getBookByUrl(this.url));
+      // }
+    },
+  },
+};
 </script>
 
 <style>
 .clickable {
   cursor: pointer;
+}
+.canvas {
+  background-color: #f5e6ca;
 }
 </style>

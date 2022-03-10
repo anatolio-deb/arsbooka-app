@@ -3,16 +3,16 @@ import { load, dump } from "../localStorageApi";
 export default {
     namespaced: true,
     state: () => ({
-        books: load("wishList")
+        books: load("cart")
     }),
     mutations: {
-        addToWishList(state, book) {
+        addToCart(state, book) {
             state.books.push(book);
-            dump("wishList", JSON.stringify(state.books))
+            dump("cart", JSON.stringify(state.books))
         },
-        removeFromWishList(state, book) {
+        removeFromCart(state, book) {
             state.books.splice(state.books.indexOf(book), 1);
-            dump("wishList", JSON.stringify(state.books))
+            dump("cart", JSON.stringify(state.books))
         }
     },
     actions: {},
