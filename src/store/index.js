@@ -3,7 +3,6 @@ import Vuex from "vuex";
 import { HTTP } from "../main";
 import wishList from "./wishList";
 import cart from "./cart";
-import filter from "./filter";
 
 
 Vue.use(Vuex);
@@ -34,7 +33,6 @@ export default new Vuex.Store({
   modules: {
     wishList,
     cart,
-    filter,
   },
   getters: {
     getBookByUrl: (state) => (url) => {

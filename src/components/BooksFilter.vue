@@ -9,8 +9,7 @@
                 <v-col cols="2">
                   <v-checkbox
                     color="#FB9300"
-                    v-model="newFilter"
-                    @change="handleNewFilter"
+                    @change="$emit('new', $event)"
                   ></v-checkbox>
                 </v-col>
                 <v-col
@@ -65,9 +64,12 @@
                         <v-col cols="2">
                           <v-checkbox
                             color="#FB9300"
-                            v-model="categoryFilter"
-                            @change="handleCategoryFilter(category.url)"
-                            :value="category.url"
+                            @change="
+                              $emit('category', {
+                                event: $event,
+                                ...category,
+                              })
+                            "
                           ></v-checkbox>
                         </v-col>
                         <v-col
@@ -90,45 +92,16 @@
 </template>
 
 <script>
-import { mapActions, mapState, mapMutations, mapGetters } from "vuex";
-import { HTTP } from "../main";
+import { mapState, mapActions } from "vuex";
 
 export default {
   data() {
     return {
       showCategories: false,
-      newFilter: false,
-      categoryFilter: [],
     };
   },
-  computed: {
-    ...mapState(["categories"]),
-    ...mapGetters(["newBooks"]),
-  },
-  methods: {
-    ...mapActions(["setCategories"]),
-    handleCategoryFilter(url) {
-      HTTP.get(url).then((response) => {
-        let books = response.data.books;
-        if (this.categoryFilter.includes(url)) {
-          if (this.newFilter) {
-            books = books.filter((book) => this.newBooks.includes(book));
-          }
-          this.filterAdd(books);
-        } else {
-          this.filterRemove(books);
-        }
-      });
-    },
-    ...mapMutations("filter", ["filterAdd", "filterRemove"]),
-    handleNewFilter() {
-      if (this.newFilter) {
-        this.filterAdd(this.newBooks);
-      } else {
-        this.filterRemove(this.newBooks);
-      }
-    },
-  },
+  methods: mapActions(["setCategories"]),
+  computed: mapState(["categories"]),
   created() {
     this.setCategories();
   },

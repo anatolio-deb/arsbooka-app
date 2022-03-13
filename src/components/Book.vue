@@ -80,7 +80,7 @@
         <v-btn
           depressed
           color="#F54748"
-          class="white--text rounded-lg ml-10 py-5"
+          class="white--text rounded-lg ml-14 py-5"
           :disabled="!inStock"
           small
           @click="handleCart"
