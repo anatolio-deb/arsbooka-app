@@ -64,12 +64,7 @@
                         <v-col cols="2">
                           <v-checkbox
                             color="#FB9300"
-                            @change="
-                              $emit('category', {
-                                event: $event,
-                                ...category,
-                              })
-                            "
+                            @change="$emit('category', category)"
                           ></v-checkbox>
                         </v-col>
                         <v-col
@@ -92,18 +87,17 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
-
 export default {
   data() {
     return {
+      categories: [],
       showCategories: false,
     };
   },
-  methods: mapActions(["setCategories"]),
-  computed: mapState(["categories"]),
   created() {
-    this.setCategories();
+    this.$http
+      .get("categories/")
+      .then((response) => (this.categories = response.data));
   },
 };
 </script>
