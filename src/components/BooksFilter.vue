@@ -2,102 +2,77 @@
   <v-container fluid>
     <v-row>
       <v-col>
-        <v-card outlined rounded="lg">
-          <v-card-text>
-            <v-container>
-              <v-row justify="space-between">
-                <v-col cols="2">
-                  <v-checkbox
-                    color="#FB9300"
-                    @change="$emit('new', $event)"
-                  ></v-checkbox>
-                </v-col>
-                <v-col
-                  class="text-caption font-weight-medium"
-                  align-self="center"
-                >
-                  Новинки
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-card-text>
-        </v-card>
+        <v-list nav outlined class="rounded-lg">
+          <v-list-item>
+            <v-list-item-action>
+              <v-checkbox
+                color="#FB9300"
+                @change="updateNewFilter()"
+              ></v-checkbox>
+            </v-list-item-action>
+            <v-list-item-title class="text-caption font-weight-bold">
+              Новинки
+            </v-list-item-title>
+          </v-list-item>
+        </v-list>
       </v-col>
     </v-row>
     <v-row>
       <v-col>
-        <v-card outlined rounded="lg">
-          <v-card-title>
-            <v-container fluid>
-              <v-row justify="space-between">
-                <v-col class="text-subtitle-2" align-self="center">
-                  Категории
-                </v-col>
-                <v-col cols="3">
-                  <v-btn
-                    plain
-                    :ripple="false"
-                    icon
-                    @click="showCategories = !showCategories"
-                  >
-                    <v-icon>{{
-                      showCategories ? "mdi-chevron-up" : "mdi-chevron-down"
-                    }}</v-icon>
-                  </v-btn>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-card-title>
-
-          <v-expand-transition>
-            <div v-show="showCategories">
-              <v-divider></v-divider>
-              <v-card-text>
-                <v-container>
-                  <v-row
-                    justify="space-between"
-                    v-for="category in categories"
-                    :key="category.url"
-                  >
-                    <v-container class="my-n6">
-                      <v-row>
-                        <v-col cols="2">
-                          <v-checkbox
-                            color="#FB9300"
-                            @change="$emit('category', category)"
-                          ></v-checkbox>
-                        </v-col>
-                        <v-col
-                          class="text-caption font-weight-medium"
-                          align-self="center"
-                        >
-                          {{ category.title }}
-                        </v-col>
-                      </v-row>
-                    </v-container>
-                  </v-row>
-                </v-container>
-              </v-card-text>
-            </div>
-          </v-expand-transition>
-        </v-card>
+        <v-list nav class="rounded-lg" outlined>
+          <v-expansion-panels flat>
+            <v-expansion-panel>
+              <v-expansion-panel-header class="text-subtitle-2">
+                Категории
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <v-list-item v-for="category in categories" :key="category.url">
+                  <v-list-item-action>
+                    <v-checkbox
+                      color="#FB9300"
+                      @change="handleCategoryFilterEvent($event, category.url)"
+                    ></v-checkbox>
+                  </v-list-item-action>
+                  <v-list-item-title class="text-caption font-weight-bold">
+                    {{ category.title }}
+                  </v-list-item-title>
+                </v-list-item>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
+        </v-list>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
+import { mapState, mapActions } from "vuex";
+
 export default {
   data() {
     return {
-      categories: [],
       showCategories: false,
     };
   },
+  computed: mapState(["categories"]),
+  methods: {
+    ...mapActions([
+      "setCategories",
+      "setCategoryDetail",
+      "unsetCategoryDetail",
+      "updateNewFilter",
+    ]),
+    handleCategoryFilterEvent(event, url) {
+      if (event) {
+        this.setCategoryDetail(url);
+      } else {
+        this.unsetCategoryDetail(url);
+      }
+    },
+  },
   created() {
-    this.$http
-      .get("categories/")
-      .then((response) => (this.categories = response.data));
+    this.setCategories();
   },
 };
 </script>
