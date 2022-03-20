@@ -1,7 +1,7 @@
 <template>
   <v-list>
     <v-list-item>
-      <v-container class="canvas rounded-lg">
+      <v-container class="canvas rounded-lg" fluid>
         <v-row justify="end" class="mb-n8">
           <v-col cols="3">
             <v-btn

@@ -1,13 +1,11 @@
 <template>
   <v-container fluid class="rounded-lg">
     <v-row justify="center">
-      <v-col cols="2">
-        <v-container>
-          <BooksFilter />
-        </v-container>
+      <v-col cols="2" class="mt-2">
+        <BooksFilter />
       </v-col>
       <v-col>
-        <v-container>
+        <v-container fluid>
           <v-row>
             <v-col v-for="book in books" :key="book.url" lg="3" md="4" sm="6">
               <Book
@@ -39,8 +37,8 @@ export default {
   },
   computed: {
     ...mapGetters(["isNewBook"]),
-    ...mapState(["books"])
-    },
+    ...mapState(["books"]),
+  },
   methods: mapActions(["setBooksFromApi"]),
   mounted() {
     this.setBooksFromApi();
