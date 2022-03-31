@@ -6,7 +6,7 @@ export default {
     namespaced: true,
     state: () => ({
         book: {},
-        parental_guidances: [],
+
         parental_guidance: {},
     }),
     mutations: {
@@ -17,12 +17,8 @@ export default {
         },
 
 
-        setParentalGuidances(context) {
-            apiClient.get("parental_guidances/").then(response => context.state.parental_guidances = response.data)
-        },
-        setParentalGuidance(context, url) {
-            axios.get(url).then(response => context.state.parental_guidance = response.data);
-        },
+
+
     },
     getters: {
     }

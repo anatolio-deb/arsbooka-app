@@ -35,16 +35,11 @@
               x-small
               text-color="white"
             >
-              <span class="clickable ml-n3">New</span>
+              <span class="ml-n3">New</span>
             </v-chip>
           </v-col>
 
-          <v-col
-            class="text-caption clickable"
-            @click="onParentalGuidanceClick"
-            align-self="center"
-            cols="2"
-          >
+          <v-col class="text-caption" align-self="center" cols="2">
             {{ parentalGuidance.age + "+" }}
           </v-col>
         </v-row>
@@ -82,7 +77,7 @@
               >Предзаказ</v-btn
             >
           </v-col>
-          <v-col align-self="center" cols="1" class="ml-5"
+          <v-col align-self="center" cols="1" class="ml-3"
             ><v-btn
               depressed
               color="#F54748"
@@ -150,12 +145,6 @@ export default {
     onBookClick() {
       this.setBook(this.url);
       this.$router.push(`/books/${this.title}`);
-    },
-    onParentalGuidanceClick() {
-      this.setParentalGuidance(this.parentalGuidance.url);
-      this.$router.push(
-        `/books/parental-guidance/${this.parentalGuidance.age}/`
-      );
     },
     handleWishList() {
       let book = this["wishList/getBookByUrl"](this.url);

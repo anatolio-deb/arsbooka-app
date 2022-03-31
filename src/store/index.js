@@ -11,11 +11,15 @@ const apiClient = axios.create({
 Vue.use(Vuex);
 
 export default new Vuex.Store({
+  modules: {
+    wishList,
+    cart,
+  },
   state: {
     books: [],
     categories: [],
     newFilterApplied: false,
-    filteredCategoryBooks: [],
+    parentalGuidances: [],
   },
   mutations: {
     setNewCollectionOfBooks(state, collectionOfBooks) {
@@ -24,7 +28,7 @@ export default new Vuex.Store({
     updateCategory(state, payload) {
       for (let category of state.categories) {
         if (category.url === payload.url) {
-          state.categories[state.categories.indexOf(category)] = payload.data
+          state.categories[state.categories.indexOf(category)] = payload
         }
       }
     },
@@ -38,9 +42,20 @@ export default new Vuex.Store({
     switchNewfilter(state) {
       state.newFilterApplied = !state.newFilterApplied;
     },
-    setFilteredCategoryBooks(state, collectionOfBooks) {
-      state.filteredCategoryBooks = collectionOfBooks;
-    }
+    updateParentalGuidance(state, payload) {
+      for (let parentalGuidance of state.parentalGuidances) {
+        if (parentalGuidance.url === payload.url) {
+          state.parentalGuidances[state.parentalGuidances.indexOf(parentalGuidance)] = payload
+        }
+      }
+    },
+    unsetBooksOfParentalGuidance(state, url) {
+      for (let parentalGuidance of state.parentalGuidances) {
+        if (parentalGuidance.url === url) {
+          delete state.parentalGuidances[state.parentalGuidances.indexOf(parentalGuidance)].books
+        }
+      }
+    },
   },
   actions: {
     setBooksFromApi(context) {
@@ -49,35 +64,20 @@ export default new Vuex.Store({
     setCategories(context) {
       apiClient.get('categories/').then(response => context.state.categories = response.data)
     },
-    setCategoryDetail(context, url) {
+    setCategory(context, url) {
       axios.get(url).then((response) => {
-        return new Promise((resolve) => {
-          context.commit("updateCategory", { url: url, data: response.data })
-          resolve()
-        })
-      }).then(() => {
-        context.dispatch("updateCategoryFilter")
+        context.commit("updateCategory", response.data)
+        context.dispatch("updateFilter")
       })
     },
-    unsetCategoryDetail(context, url) {
+    unsetCategory(context, url) {
       context.commit("unsetBooksOfCategory", url)
-      context.dispatch("updateCategoryFilter")
-    },
-    updateCategoryFilter(context) {
-      context.dispatch("updateFilteredCategoryBooks").then(() => {
-        return new Promise((resolve) => {
-          if (context.state.newFilterApplied) {
-            context.commit("setFilteredCategoryBooks", context.getters.newBooks(context.state.filteredCategoryBooks))
-          }
-          context.commit("setNewCollectionOfBooks", context.state.filteredCategoryBooks)
-          resolve()
-        })
-      })
+      context.dispatch("updateFilter")
     },
     updateNewFilter(context) {
       context.commit("switchNewfilter")
-      if (context.state.filteredCategoryBooks.length > 0) {
-        context.dispatch("updateCategoryFilter")
+      if (context.getters.getActiveCategoriesBooks.length) {
+        context.dispatch("updateFilter")
       } else if (context.state.newFilterApplied) {
         context.commit("setNewCollectionOfBooks", context.getters.newBooks(context.state.books))
       } else { context.dispatch("cancelNewFilter") }
@@ -85,28 +85,77 @@ export default new Vuex.Store({
     cancelNewFilter(context) {
       context.dispatch("setBooksFromApi")
     },
-    updateFilteredCategoryBooks(context) {
-      return new Promise((resolve) => {
-        let collectionOfBooks = []
-
-        for (let category of context.state.categories) {
-          if (category.books) {
-            collectionOfBooks.push.apply(collectionOfBooks, category.books)
-          }
-        }
-
-        if (collectionOfBooks.length > 0) {
-          context.commit("setFilteredCategoryBooks", collectionOfBooks)
-        } else {
-          context.dispatch("setBooksFromApi")
-        }
-        resolve()
+    setParentalGuidances(context) {
+      apiClient.get("parental_guidances/").then(response => context.state.parentalGuidances = response.data)
+    },
+    setParentalGuidance(context, url) {
+      axios.get(url).then(response => {
+        context.commit("updateParentalGuidance", response.data)
+        context.dispatch("updateFilter")
       })
     },
-  },
-  modules: {
-    wishList,
-    cart,
+    unsetParentalGuidance(context, url) {
+      context.commit("unsetBooksOfParentalGuidance", url)
+      context.dispatch("updateFilter")
+    },
+    getActiveParentalGuidanceBooks(context) {
+      let activeParentalGuidanceBooks = []
+
+      for (let parentalGuidance of context.state.parentalGuidances) {
+        if (parentalGuidance.books) {
+          activeParentalGuidanceBooks.push.apply(activeParentalGuidanceBooks, parentalGuidance.books)
+        }
+      }
+
+      return activeParentalGuidanceBooks
+    },
+    getActiveCategoriesBooks(context) {
+      let activeCategoriesBooks = []
+
+      for (let category of context.state.categories) {
+        if (category.books) {
+          activeCategoriesBooks.push.apply(activeCategoriesBooks, category.books)
+        }
+      }
+
+      return activeCategoriesBooks
+    },
+    getActiveParentalGuidances(context) {
+      return context.state.parentalGuidances.filter(parentalGuidance => parentalGuidance.books)
+    },
+    async updateFilter(context) {
+      let collectionOfBooks = [];
+      let activeCategoriesBooks = await context.dispatch("getActiveCategoriesBooks")
+
+      if (activeCategoriesBooks.length) {
+        collectionOfBooks = activeCategoriesBooks
+      }
+
+      let activeParentalGuidances = await context.dispatch("getActiveParentalGuidances")
+
+      if (activeParentalGuidances.length) {
+        let urls = [];
+
+        for (let parentalGuidance of activeParentalGuidances) {
+          urls.push(parentalGuidance.url)
+        }
+
+        if (collectionOfBooks.length) {
+          collectionOfBooks = collectionOfBooks.filter(book => urls.includes(book.parental_guidance.url));
+        } else {
+          collectionOfBooks = await context.dispatch("getActiveParentalGuidanceBooks");
+        }
+      }
+
+      if (collectionOfBooks.length) {
+        if (context.state.newFilterApplied) {
+          collectionOfBooks = context.getters.newBooks(collectionOfBooks);
+        }
+        context.commit("setNewCollectionOfBooks", collectionOfBooks)
+      } else {
+        context.dispatch("setBooksFromApi")
+      }
+    }
   },
   getters: {
     newBooks: () => (collectionOfBooks) => {
