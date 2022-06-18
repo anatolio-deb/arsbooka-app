@@ -1,0 +1,10 @@
+name: GitHub Action to build and push Docker image to GitHub Container Registry
+on: [push]
+jobs:
+  build:
+    runs-on: docker
+    steps:
+      - name: Build
+      - run: docker-compose -f docker-compose.prod.yml build app
+      - name: Push
+      - run : docker-compose -f docker-compose.prod.yml push app

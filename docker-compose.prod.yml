@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+      image: ghcr.io/anatolio-deb/arsbooka-app:latest
+    environment:
+      - VUE_APP_API_URL=http://api:8000/api/
+    expose:
+      - 80
+    command: nginx -g daemon off
