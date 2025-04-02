@@ -1,0 +1,13 @@
+services:
+  app:
+    build: .
+    environment:
+      # - VUE_APP_API_URL=https://arsbooka.com/api/
+      - VUE_APP_API_URL=http://localhost:8000/api/
+      - CHOKIDAR_USEPOLLING=true
+      # - NODE_OPTIONS=--openssl-legacy-provider
+    volumes:
+      - .:/code
+    command: npm run serve
+    ports:
+        - 8080:8080
