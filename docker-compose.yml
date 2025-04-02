@@ -8,6 +8,6 @@ services:
       # - NODE_OPTIONS=--openssl-legacy-provider
     volumes:
       - .:/code
-    command: npm run serve
+    # command: npm run serve
     ports:
         - 8080:8080
