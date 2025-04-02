@@ -1,7 +1,7 @@
 <template>
   <v-container class="rounded-lg white">
     <v-row justify="center">
-      <v-col cols="2" class="mt-2">
+      <v-col cols="2" lg="3" class="mt-2">
         <BooksFilter :key="reset" />
       </v-col>
       <v-col>
@@ -25,7 +25,7 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col v-for="book in books" :key="book.url" lg="3" md="4" sm="6">
+            <v-col v-for="book in books" :key="book.url" lg="5" md="4" sm="6">
               <Book
                 :url="book.url"
                 :title="book.title"
