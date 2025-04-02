@@ -8,4 +8,3 @@ RUN apk update && \
     && git config --global user.name anatolio-deb \
     && wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.shrc" SHELL="$(which sh)" sh - \
     && source /root/.shrc
-    # && npm install -g @vue/cli
